@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/faction_logo"
+        android:gravity="top"
+        android:layout_alignParentLeft="true"
+        android:focusable="false"
+        android:padding="4dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/faction_name"
+        android:layout_toRightOf="@id/faction_logo"
+        android:gravity="center|top"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:textSize="16dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:text="Faction name"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/faction_cat_and_type"
+        android:layout_toRightOf="@id/faction_logo"
+        android:layout_below="@id/faction_name"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:text="Faction category and type"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/faction_founding_date"
+        android:layout_toRightOf="@id/faction_logo"
+        android:layout_below="@id/faction_cat_and_type"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:text="Faction founding date"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/faction_leader"
+        android:layout_toRightOf="@id/faction_logo"
+        android:layout_below="@id/faction_founding_date"
+        android:gravity="center"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:text="Faction leader"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/faction_2iC"
+        android:layout_toRightOf="@id/faction_logo"
+        android:layout_below="@id/faction_leader"
+        android:gravity="center"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:text="Faction 2iC"/>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Global Strings -->
+    <string name="app_name">Star Wars Combine - API Use</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="back_to_overview">Return to Main Menu</string>
+    <string name="loading">Loading...</string>
+
+    <!-- Overview Strings -->
+    <string name="check_user_name">Verify Handle</string>
+    <string name="faction">Look Up Faction</string>
+    <string name="galaxy">Browse Galaxy -- Not Implemented Yet</string>
+    <string name="entities">Browse Entities -- Not Implemented Yet</string>
+
+    <!-- Handle Verification Strings -->
+    <string name="handle_verification_instructions">Please enter a handle to verify (Case does not matter):</string>
+    <string name="verify_handle">Submit</string>
+
+    <!-- Faction Strings -->
+    <string name="factions_title">Factions</string>
+
+
+</resources>

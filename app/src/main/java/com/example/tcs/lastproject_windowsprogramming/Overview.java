@@ -30,6 +30,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class Overview extends ActionBarActivity {
     private TextView mSWC_TimeStamp;
+    private DB_Init.FactionDbHelper mDbHelper;
+    //private SQLiteDatabase mDB;
     private ArrayList<Faction> mFactions;
     private Button mCheckHandleValidity;
     private Button mLookUpFaction;
@@ -219,7 +221,7 @@ public class Overview extends ActionBarActivity {
                     String sIc = getTextValue(fac, "second-in-command");
                     URL facURL = new URL(fac.getAttribute("href"));
                     Faction factionItself = new Faction(uid, name, sIc, leader, facURL);
-                    factionItself.update();
+                    factionItself.update(getApplicationContext());
                     factions.add(factionItself);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();

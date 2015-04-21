@@ -6,10 +6,12 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 public final class DB_Init {
     // To prevent someone from accidentally instantiating the contract class,
     // give it an empty constructor.
+    private static final String TAG = "SWC API";
     public DB_Init() {}
 
     /* Inner class that defines the table contents */
@@ -120,6 +122,25 @@ public final class DB_Init {
             db.close();
             close();
             return result;
+        }
+
+        public synchronized boolean hasRecords()
+        {
+            FactionDbHelper helper = new FactionDbHelper(mContext);
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor result = db.rawQuery("SELECT * FROM " + FactionTable.FACTIONS_TABLE_NAME, null);
+            db.close();
+            close();
+            if(result.getCount() > 0)
+            {
+                Log.d(TAG, "True");
+                return true;
+            }
+            else
+            {
+                Log.d(TAG, "False");
+                return false;
+            }
         }
     }
 }

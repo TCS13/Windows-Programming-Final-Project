@@ -1,6 +1,5 @@
 package com.example.tcs.lastproject_windowsprogramming;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -77,26 +76,47 @@ public final class DB_Init {
             SQLiteDatabase db = getWritableDatabase();
 
             // Create a new map of values, where column names are the keys
-            ContentValues values = new ContentValues();
-            values.put(DB_Init.FactionTable.FACTION_SWC_ID, factionData.getSWC_uid());
-            values.put(DB_Init.FactionTable.FACTION_NAME, factionData.getName());
-            values.put(DB_Init.FactionTable.FACTION_LEADER, factionData.getLeader());
-            values.put(DB_Init.FactionTable.FACTION_2IC, factionData.getM2iC());
-            values.put(DB_Init.FactionTable.FACTION_CAT_AND_TYPE, factionData.getCatAndType());
-            values.put(DB_Init.FactionTable.FACTION_FOUNDING_DATE, factionData.getFoundationDate());
-            values.put(DB_Init.FactionTable.FACTION_DESCRIPTION, factionData.getDescription());
-            values.put(DB_Init.FactionTable.FACTION_LOGO, factionData.getLogo().toString());
+//            ContentValues values = new ContentValues();
+//            values.put(DB_Init.FactionTable.FACTION_SWC_ID, factionData.getSWC_uid());
+//            values.put(DB_Init.FactionTable.FACTION_NAME, factionData.getName());
+//            values.put(DB_Init.FactionTable.FACTION_LEADER, factionData.getLeader());
+//            values.put(DB_Init.FactionTable.FACTION_2IC, factionData.getM2iC());
+//            values.put(DB_Init.FactionTable.FACTION_CAT_AND_TYPE, factionData.getCatAndType());
+//            values.put(DB_Init.FactionTable.FACTION_FOUNDING_DATE, factionData.getFoundationDate());
+//            values.put(DB_Init.FactionTable.FACTION_DESCRIPTION, factionData.getDescription());
+//            values.put(DB_Init.FactionTable.FACTION_LOGO, factionData.getLogo().toString());
 
             String[] test = {DatabaseUtils.sqlEscapeString(factionData.getSWC_uid()), factionData.getName(), factionData.getLeader(), factionData.getM2iC(), factionData.getFoundationDate(), factionData.getCatAndType(), factionData.getLogo().toString(), DatabaseUtils.sqlEscapeString(factionData.getDescription())};
 
             // Insert the new row, returning the primary key value of the new row
-            long newRowId;
+            //long newRowId;
             //Cursor result = db.rawQuery("INSERT OR REPLACE INTO " + FactionTable.FACTIONS_TABLE_NAME + " (" + FactionTable.FACTION_SWC_ID + ", " + FactionTable.FACTION_NAME + ", " + FactionTable.FACTION_LEADER + ", " + FactionTable.FACTION_2IC + ", " + FactionTable.FACTION_FOUNDING_DATE + ", " + FactionTable.FACTION_CAT_AND_TYPE + ", " + FactionTable.FACTION_LOGO + ", " + FactionTable.FACTION_DESCRIPTION + ") VALUES (" + factionData.getSWC_uid() + ", COALESCE((SELECT " + FactionTable.FACTION_NAME + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + factionData.getSWC_uid() + "), '" + factionData.getName() + "'), COALESCE((SELECT " + FactionTable.FACTION_LEADER + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + factionData.getSWC_uid() + "), '" + factionData.getLeader() + "'), COALESCE((SELECT " + FactionTable.FACTION_2IC + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + factionData.getSWC_uid() + "), '" + factionData.getM2iC() + "'), COALESCE((SELECT " + FactionTable.FACTION_FOUNDING_DATE + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + factionData.getSWC_uid() + "), '" + factionData.getFoundationDate() + "'), COALESCE((SELECT " + FactionTable.FACTION_CAT_AND_TYPE + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + factionData.getSWC_uid() + "), '" + factionData.getCatAndType() + "'), COALESCE((SELECT " + FactionTable.FACTION_LOGO + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + factionData.getSWC_uid() + "), '" + factionData.getLogo() + "'), COALESCE((SELECT " + FactionTable.FACTION_DESCRIPTION + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + factionData.getSWC_uid() + "), '" + factionData.getDescription() + "'));", null);
             Cursor result = db.rawQuery("INSERT OR REPLACE INTO " + FactionTable.FACTIONS_TABLE_NAME + " ("+FactionTable.FACTION_SWC_ID + ", " + FactionTable.DATE_OF_LAST_UPDATE + ", " + FactionTable.FACTION_NAME + ", " + FactionTable.FACTION_LEADER + ", " + FactionTable.FACTION_2IC + ", " + FactionTable.FACTION_FOUNDING_DATE + ", " + FactionTable.FACTION_CAT_AND_TYPE + ", " + FactionTable.FACTION_LOGO + ", " + FactionTable.FACTION_DESCRIPTION + ") VALUES (?,datetime('now'), COALESCE((SELECT " + FactionTable.FACTION_NAME + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + DatabaseUtils.sqlEscapeString(factionData.getSWC_uid()) + "), ?), COALESCE((SELECT " + FactionTable.FACTION_LEADER + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + DatabaseUtils.sqlEscapeString(factionData.getSWC_uid()) + "), ?), COALESCE((SELECT " + FactionTable.FACTION_2IC + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + DatabaseUtils.sqlEscapeString(factionData.getSWC_uid()) + "), ?), COALESCE((SELECT " + FactionTable.FACTION_FOUNDING_DATE + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + DatabaseUtils.sqlEscapeString(factionData.getSWC_uid()) + "), ?), COALESCE((SELECT " + FactionTable.FACTION_CAT_AND_TYPE + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + DatabaseUtils.sqlEscapeString(factionData.getSWC_uid()) + "), ?), COALESCE((SELECT " + FactionTable.FACTION_LOGO + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + DatabaseUtils.sqlEscapeString(factionData.getSWC_uid()) + "), ?), COALESCE((SELECT " + FactionTable.FACTION_DESCRIPTION + " FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = " + DatabaseUtils.sqlEscapeString(factionData.getSWC_uid()) + "), ?));", test);
 //            newRowId = db.insert(
 //                    DB_Init.FactionTable.FACTIONS_TABLE_NAME,
 //                    DB_Init.FactionTable.FACTION_COLUMN_NULLABLE,
 //                    values);
+            db.close();
+            close();
+            return result;
+        }
+
+        public synchronized Cursor getFactionBySWCID(String swc_id)
+        {
+            FactionDbHelper helper = new FactionDbHelper(mContext);
+            SQLiteDatabase db = getReadableDatabase();
+            String[] test = {DatabaseUtils.sqlEscapeString(swc_id)};
+            Cursor result = db.rawQuery("SELECT * FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = '?'", test);
+            db.close();
+            close();
+            return result;
+        }
+
+        public synchronized Cursor getAllFactions()
+        {
+            FactionDbHelper helper = new FactionDbHelper(mContext);
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor result = db.rawQuery("SELECT * FROM " + FactionTable.FACTIONS_TABLE_NAME, null);
             db.close();
             close();
             return result;

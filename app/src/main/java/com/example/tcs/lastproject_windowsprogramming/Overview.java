@@ -43,15 +43,15 @@ public class Overview extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
+
+        mSWC_TimeStamp = (TextView)findViewById(R.id.swc_timestamp);
+        new loadTimeStamp().execute("http://www.swcombine.com:8081/ws/v1.0/api/time/cgt/");
         if(mFactions == null)
         {
             mFactions = new ArrayList<Faction>();
             mFactions.add(new Faction("Loading", "Loading", "Loading", "Loading", null));
         }
         new GetFactionList().execute(mFactions);
-
-        mSWC_TimeStamp = (TextView)findViewById(R.id.swc_timestamp);
-        new loadTimeStamp().execute("http://www.swcombine.com:8081/ws/v1.0/api/time/cgt/");
 
         mCheckHandleValidity = (Button)findViewById(R.id.check_user_name);
         mCheckHandleValidity.setOnClickListener(new View.OnClickListener() {

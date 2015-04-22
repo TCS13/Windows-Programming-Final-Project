@@ -109,6 +109,7 @@ public final class DB_Init {
             SQLiteDatabase db = getReadableDatabase();
             String[] test = {DatabaseUtils.sqlEscapeString(swc_id)};
             Cursor result = db.rawQuery("SELECT * FROM " + FactionTable.FACTIONS_TABLE_NAME + " WHERE " + FactionTable.FACTION_SWC_ID + " = '?'", test);
+            //Faction fac = new Faction(null, null, null, null, null);
             db.close();
             close();
             return result;
@@ -129,16 +130,18 @@ public final class DB_Init {
             FactionDbHelper helper = new FactionDbHelper(mContext);
             SQLiteDatabase db = getReadableDatabase();
             Cursor result = db.rawQuery("SELECT * FROM " + FactionTable.FACTIONS_TABLE_NAME, null);
-            db.close();
-            close();
             if(result.getCount() > 0)
             {
                 Log.d(TAG, "True");
+                db.close();
+                close();
                 return true;
             }
             else
             {
                 Log.d(TAG, "False");
+                db.close();
+                close();
                 return false;
             }
         }

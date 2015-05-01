@@ -1,5 +1,6 @@
 package com.example.tcs.lastproject_windowsprogramming;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -35,7 +36,10 @@ public class Faction implements Serializable, Comparable{
     private String mCatAndType;
     private String mFoundationDate;
     private URL mUpdateURL;
+    private String mDescription;
     private byte[] mLogoDrawable;
+    private DB_Init.FactionDbHelper mDbHelper;
+    private Context mContext;
 
     private static final String TAG = "SWC API";
 
@@ -53,6 +57,10 @@ public class Faction implements Serializable, Comparable{
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getSWC_uid() {
+        return mSWC_uid;
     }
 
     public UUID getID() {
@@ -115,8 +123,22 @@ public class Faction implements Serializable, Comparable{
         return BitmapFactory.decodeByteArray(mLogoDrawable, 0, mLogoDrawable.length);
     }
 
-    public void update() {
-        new updateFaction().execute(getUpdateURL());
+    public String getDescription() {
+        return mDescription;
+    }
+
+    public void setDescription(String description) {
+        mDescription = description;
+    }
+
+    public Faction getCurrentFaction()
+    {
+        return this;
+    }
+
+    public void update(Context c) {
+       mContext = c;
+       new updateFaction().execute(getUpdateURL());
     }
 
     @Override
@@ -150,7 +172,7 @@ public class Faction implements Serializable, Comparable{
     private class updateFaction extends AsyncTask {
         private final int MAX_FACTIONS_PER_QUERY = 50;
         protected String[] doInBackground(Object[] uid) {
-            String[] data = new String[6];
+            String[] data = new String[7];
             URL url = (URL)uid[0];
             //Log.d(TAG, "Background continuing 1");
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -172,6 +194,7 @@ public class Faction implements Serializable, Comparable{
             NodeList a = document.getElementsByTagName("faction");
             Element fac = (Element)a.item(0);
             String name = getTextValue(fac, "name");
+            String desc = getTextValue(fac, "description");
             String leader = getTextValue(fac, "leader");
             String sIc = getTextValue(fac, "second-in-command");
             String catAndType = getTextValue(fac, "category") + ": " + getTextValue(fac, "type");
@@ -187,6 +210,7 @@ public class Faction implements Serializable, Comparable{
             data[3] = catAndType;
             data[4] = creationDate;
             data[5] = logo;
+            data[6] = desc;
             return data;
         }
 
@@ -228,6 +252,9 @@ public class Faction implements Serializable, Comparable{
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
+            setDescription(results[6]);
+            mDbHelper = new DB_Init.FactionDbHelper(mContext);
+            mDbHelper.insertFactionDataToDB(getCurrentFaction());
         }
     }
 

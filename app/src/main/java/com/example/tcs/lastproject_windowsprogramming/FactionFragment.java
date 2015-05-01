@@ -60,7 +60,7 @@ public class FactionFragment extends Fragment {
         UUID factionId = (UUID)getArguments().getSerializable(EXTRA_FACTION_ID);
         //Log.d(TAG, factionId.toString());
         mFaction = (Faction)getArguments().getSerializable(EXTRA_FACTION);
-        mFaction.update();
+        mFaction.update(getActivity().getApplicationContext());
         //Log.d(TAG, "Faction retrieved: "+mFaction.toString());
         //mFaction = FactionGeneration.get(getActivity()).getFaction(factionId);
     }

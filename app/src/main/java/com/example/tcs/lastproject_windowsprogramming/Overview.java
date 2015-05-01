@@ -2,6 +2,7 @@ package com.example.tcs.lastproject_windowsprogramming;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class Overview extends ActionBarActivity {
     private TextView mSWC_TimeStamp;
+    private DB_Init.FactionDbHelper mDbHelper;
+    //private SQLiteDatabase mDB;
     private ArrayList<Faction> mFactions;
     private Button mCheckHandleValidity;
     private Button mLookUpFaction;
@@ -41,15 +44,15 @@ public class Overview extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
+
+        mSWC_TimeStamp = (TextView)findViewById(R.id.swc_timestamp);
+        new loadTimeStamp().execute("http://www.swcombine.com:8081/ws/v1.0/api/time/cgt/");
         if(mFactions == null)
         {
             mFactions = new ArrayList<Faction>();
             mFactions.add(new Faction("Loading", "Loading", "Loading", "Loading", null));
         }
         new GetFactionList().execute(mFactions);
-
-        mSWC_TimeStamp = (TextView)findViewById(R.id.swc_timestamp);
-        new loadTimeStamp().execute("http://www.swcombine.com:8081/ws/v1.0/api/time/cgt/");
 
         mCheckHandleValidity = (Button)findViewById(R.id.check_user_name);
         mCheckHandleValidity.setOnClickListener(new View.OnClickListener() {
@@ -160,104 +163,116 @@ public class Overview extends ActionBarActivity {
         protected ArrayList<Faction> doInBackground(Object[] link) {
             //ArrayList<Faction> factions = (ArrayList<Faction>)link[0];
             ArrayList<Faction> factions = new ArrayList<Faction>();
-            URL url = null;
-            try {
-                url = new URL("http://www.swcombine.com:8081/ws/v1.0/factions/");
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            //Log.d(TAG, "Background continuing 1");
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = null;
-            try {
-                builder = factory.newDocumentBuilder();
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();
-            }
-            //Log.d(TAG, "Background continuing 2");
-            Document document = null;
-            try {
-                document = builder.parse(url.openStream());
-            } catch (SAXException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            NodeList a = document.getElementsByTagName("factions");
-            Element el = (Element)a.item(0);
-            Log.d(TAG, "Total number of factions: " + el.getAttribute("total"));
-            int numFactions = Integer.parseInt(el.getAttribute("total"));
-            int numFactionsTotal = numFactions;
-            int numCalls = 0;
-            int numFactionsRemaining = 1;
-            for(int i = 0; i < numFactions; i=i+MAX_FACTIONS_PER_QUERY)
+            mDbHelper = new DB_Init.FactionDbHelper(getBaseContext());
+            if(mDbHelper.hasRecords())
             {
-                numCalls++;
+                Cursor allFactions = mDbHelper.getAllFactions();
+                allFactions.moveToFirst();
+                String[] t = allFactions.getColumnNames();
+                for(int i = 0; i < t.length; i++)
+                {
+                    Log.d(TAG, i+": "+t[i]);
+                }
+                return factions;
             }
-            Log.d(TAG, "Total number of factions: "+numFactions);
-            Log.d(TAG, "Total number of calls required: "+numCalls);
-            int count = 0;
-            for(int i = 0; i < numFactions && i < MAX_FACTIONS_PER_QUERY; i++)
+            else
             {
-                NodeList b = el.getElementsByTagName("faction");
-                Element fac = (Element)b.item(i);
+                URL url = null;
+                try {
+                    url = new URL("http://www.swcombine.com:8081/ws/v1.0/factions/");
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                //Log.d(TAG, "Background continuing 1");
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = null;
+                try {
+                    builder = factory.newDocumentBuilder();
+                } catch (ParserConfigurationException e) {
+                    e.printStackTrace();
+                }
+                //Log.d(TAG, "Background continuing 2");
+                Document document = null;
+                try {
+                    document = builder.parse(url.openStream());
+                } catch (SAXException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                NodeList a = document.getElementsByTagName("factions");
+                Element el = (Element) a.item(0);
+                Log.d(TAG, "Total number of factions: " + el.getAttribute("total"));
+                int numFactions = Integer.parseInt(el.getAttribute("total"));
+                int numFactionsTotal = numFactions;
+                int numCalls = 0;
+                int numFactionsRemaining = 1;
+                for (int i = 0; i < numFactions; i = i + MAX_FACTIONS_PER_QUERY) {
+                    numCalls++;
+                }
+                Log.d(TAG, "Total number of factions: " + numFactions);
+                Log.d(TAG, "Total number of calls required: " + numCalls);
+                int count = 0;
+                for (int i = 0; i < numFactions && i < MAX_FACTIONS_PER_QUERY; i++) {
+                    NodeList b = el.getElementsByTagName("faction");
+                    Element fac = (Element) b.item(i);
 //                NodeList facLead = fac.getElementsByTagName("leader");
 //                Element lead = (Element)facLead.item(0);
 //                NodeList fac2iC = fac.getElementsByTagName("second-in-command");
 //                Element second = (Element)fac2iC.item(0);
-                try {
-                    //Log.d(TAG, "UID: "+fac.getAttribute("uid"));
-                    Log.d(TAG, "Name: "+fac.getAttribute("name"));
-                    //Log.d(TAG, "Link: "+fac.getAttribute("href"));
-                    //Log.d(TAG, "Leader: "+getTextValue(fac, "leader"));
-                    //Log.d(TAG, "2iC: "+getTextValue(fac, "second-in-command"));
-                    Log.d(TAG, "Number: " + numFactionsRemaining);
-                    Log.d(TAG, "Size of Factions: "+factions.size());
-                    String uid = fac.getAttribute("uid");
-                    String name = fac.getAttribute("name");
-                    String leader = getTextValue(fac, "leader");
-                    String sIc = getTextValue(fac, "second-in-command");
-                    URL facURL = new URL(fac.getAttribute("href"));
-                    Faction factionItself = new Faction(uid, name, sIc, leader, facURL);
-                    factionItself.update();
-                    factions.add(factionItself);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    Log.d(TAG, "An error occurred getting a faction");
-                }
-                //mLookUpFaction.setText("Loading... (" +numFactionsRemaining+"/"+numFactionsTotal+")");
-                Log.d(TAG, factions.get(i).toString());
-                numFactionsRemaining++;
-                if(i==49)
-                {
-                    //mLookUpFaction.setText("Loading... (" +numFactionsRemaining/numFactionsTotal+"%)");
-                    //updateButton(mLookUpFaction, "Loading... (" +numFactionsRemaining/numFactionsTotal+"%)");
-                    numFactions -= 50;
                     try {
-                        url = new URL("http://www.swcombine.com:8081/ws/v1.0/factions/?start_index="+ (numFactionsRemaining));
+                        //Log.d(TAG, "UID: "+fac.getAttribute("uid"));
+                        Log.d(TAG, "Name: " + fac.getAttribute("name"));
+                        //Log.d(TAG, "Link: "+fac.getAttribute("href"));
+                        //Log.d(TAG, "Leader: "+getTextValue(fac, "leader"));
+                        //Log.d(TAG, "2iC: "+getTextValue(fac, "second-in-command"));
+                        Log.d(TAG, "Number: " + numFactionsRemaining);
+                        Log.d(TAG, "Size of Factions: " + factions.size());
+                        String uid = fac.getAttribute("uid");
+                        String name = fac.getAttribute("name");
+                        String leader = getTextValue(fac, "leader");
+                        String sIc = getTextValue(fac, "second-in-command");
+                        URL facURL = new URL(fac.getAttribute("href"));
+                        Faction factionItself = new Faction(uid, name, sIc, leader, facURL);
+                        factionItself.update(getApplicationContext());
+                        factions.add(factionItself);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
+                        Log.d(TAG, "An error occurred getting a faction");
                     }
-                    //Log.d(TAG, "Background continuing 1");
-                    factory = DocumentBuilderFactory.newInstance();
-                    builder = null;
-                    try {
-                        builder = factory.newDocumentBuilder();
-                    } catch (ParserConfigurationException e) {
-                        e.printStackTrace();
+                    //mLookUpFaction.setText("Loading... (" +numFactionsRemaining+"/"+numFactionsTotal+")");
+                    Log.d(TAG, factions.get(i).toString());
+                    numFactionsRemaining++;
+                    if (i == 49) {
+                        //mLookUpFaction.setText("Loading... (" +numFactionsRemaining/numFactionsTotal+"%)");
+                        //updateButton(mLookUpFaction, "Loading... (" +numFactionsRemaining/numFactionsTotal+"%)");
+                        numFactions -= 50;
+                        try {
+                            url = new URL("http://www.swcombine.com:8081/ws/v1.0/factions/?start_index=" + (numFactionsRemaining));
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                        //Log.d(TAG, "Background continuing 1");
+                        factory = DocumentBuilderFactory.newInstance();
+                        builder = null;
+                        try {
+                            builder = factory.newDocumentBuilder();
+                        } catch (ParserConfigurationException e) {
+                            e.printStackTrace();
+                        }
+                        //Log.d(TAG, "Background continuing 2");
+                        document = null;
+                        try {
+                            document = builder.parse(url.openStream());
+                        } catch (SAXException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        a = document.getElementsByTagName("factions");
+                        el = (Element) a.item(0);
+                        i = -1;
                     }
-                    //Log.d(TAG, "Background continuing 2");
-                    document = null;
-                    try {
-                        document = builder.parse(url.openStream());
-                    } catch (SAXException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    a = document.getElementsByTagName("factions");
-                    el = (Element)a.item(0);
-                    i=-1;
                 }
             }
             Collections.sort(factions);
